@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Ahwoo.BRUTAL.Core" Version="2026.10.1" />
+      <PackageReference Include="Ahwoo.BRUTAL.Glfw" Version="2026.10.4" />
+      <PackageReference Include="Ahwoo.BRUTAL.Vulkan" Version="2026.10.2" />
+      <PackageReference Include="Ahwoo.BRUTAL.Vulkan.Abstractions" Version="2026.10.2" />
+      <PackageReference Include="Ahwoo.BRUTAL.Vulkan.Vma" Version="2026.10.2" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-rc.2.26504.105" />
+    </ItemGroup>
+
+</Project>
