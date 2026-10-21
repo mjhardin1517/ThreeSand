@@ -11,6 +11,10 @@ public sealed class GraphicsContext : IDisposable
     private readonly Instance _instance;
     private readonly DebugHelper _debugHelper;
     private readonly Stack<IDisposable> _disposables = new();
+    /// <summary>
+    /// Where `int` is the queue family
+    /// </summary>
+    private readonly (PhysicalDevice, int) _physicalDevice;
 
     public unsafe GraphicsContext(IEnumerable<string> requiredExtensions)
     {
@@ -49,6 +53,9 @@ public sealed class GraphicsContext : IDisposable
 
             _debugHelper = new DebugHelper(_instance, debugInfo);
             _disposables.Push(_debugHelper);
+            
+            // Get the physical device along with its queue family
+            _physicalDevice = PhysicalDeviceHelper.Get(_instance);
         }
         catch (Exception e)
         {

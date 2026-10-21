@@ -19,7 +19,7 @@ internal sealed class ApplicationInfoHelper : IDisposable
             EngineName = engineName,
             EngineVersion = VulkanVersion.Make(26, 10, 2),
             // Vulkan ignores patch version so we just pass in 0
-            ApiVersion = VulkanVersion.Make(1, 4, 0)
+            ApiVersion = (int)MyConstants.RequiredApiVersion,
         };
     }
 
