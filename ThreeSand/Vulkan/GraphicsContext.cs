@@ -34,10 +34,6 @@ public sealed class GraphicsContext : IDisposable
             var flags = FlagsHelper.CreateFlags(ExtensionHelper.CheckPortability(extensionSet));
             VkDebugUtilsMessengerCreateInfoEXT debugInfo = DebugHelper.CreateInfo();
 
-            var deviceQueue = new VkDeviceQueueCreateInfo
-            {
-
-            };
             
             _instance = Brutal.VulkanApi.Vulkan.CreateInstance(new Instance.CreateInfo
             {
