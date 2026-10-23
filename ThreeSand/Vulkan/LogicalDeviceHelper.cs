@@ -1,4 +1,5 @@
 using Brutal.VulkanApi;
+using Brutal.VulkanApi.Abstractions;
 using ThreeSand.Interop;
 
 namespace ThreeSand.Vulkan;
@@ -15,27 +16,35 @@ namespace ThreeSand.Vulkan;
 ///
 /// You record many commands into a command buffer. Those commands are then sent to a queue.
 /// </summary>
-public sealed class LogicalDeviceHelper : IDisposable
+public static class LogicalDeviceHelper
 {
-    // TODO: We only need this past the CreateDevice call, so we don't really need this native memory float arr... get rid of it
-    private readonly FloatArr _queuePriorities = new ([1.0f]);
-    
-    public LogicalDeviceHelper(PhysicalDevice physicalDevice, int queueFamilyIndex)
+    public static unsafe Device Create(PhysicalDevice physicalDevice, int queueFamilyIndex)
     {
-        var deviceQueueCreateInfo = new VkDeviceQueueCreateInfo
+        float[] queuePriorities = [1.0f];
+
+        HashSet<string> extensions = [];
+        VulkanHelpers.AddMandatoryIfSupportedDeviceExtensions(extensions, physicalDevice);
+
+        // ptr only needs to exist through call to CreateDevice
+        fixed (float* queuePrioritiesPtr = queuePriorities)
         {
-            QueueFamilyIndex = queueFamilyIndex,
-            // Setting to 1 for now, this might change if we want to do more compute for the sim in parallel. However, queue
-            // families only have so many queues, so you need to find that out before you change it.
-            QueueCount = _queuePriorities.Count,
-            QueuePriorities = _queuePriorities,
-        };
+            var deviceQueueCreateInfo = new VkDeviceQueueCreateInfo
+            {
+                QueueFamilyIndex = queueFamilyIndex,
+                // Setting to 1 for now, this might change if we want to do more compute for the sim in parallel. However, queue
+                // families only have so many queues, so you need to find that out before you change it.
+                QueueCount = queuePriorities.Length,
+                QueuePriorities = queuePrioritiesPtr,
+            };
 
-        physicalDevice.CreateDevice(deviceQueueCreateInfo);
-    }
+            var device = physicalDevice.CreateDevice(new Device.CreateInfo
+            {
+                Extensions = extensions,
+                // This is in a collection because there can be an info per QUEUE FAMILY
+                QueueCreateInfos = [deviceQueueCreateInfo],
+            });
 
-    public void Dispose()
-    {
-        _queuePriorities.Dispose();
+            return device;
+        }
     }
 }

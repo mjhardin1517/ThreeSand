@@ -15,6 +15,13 @@ public sealed class GraphicsContext : IDisposable
     /// Where `int` is the queue family
     /// </summary>
     private readonly (PhysicalDevice, int) _physicalDevice;
+    
+    /// <summary>
+    /// This is the logical device
+    /// </summary>
+    private readonly Device _device;
+    
+    private readonly Queue _queue;
 
     public unsafe GraphicsContext(IEnumerable<string> requiredExtensions)
     {
@@ -57,6 +64,15 @@ public sealed class GraphicsContext : IDisposable
             
             // Get the physical device along with its queue family
             _physicalDevice = PhysicalDeviceHelper.Get(_instance);
+            
+            // Create the logical device
+            _device = LogicalDeviceHelper.Create(_physicalDevice.Item1, _physicalDevice.Item2);
+            _disposables.Push(_device);
+            
+            // 0 because we only have the one queue configured
+            _queue = _device.GetQueue(_physicalDevice.Item2, 0);
+            
+            
         }
         catch (Exception e)
         {
